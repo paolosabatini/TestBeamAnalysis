@@ -3,6 +3,9 @@
 import os, glob
 import argparse
 import sys,subprocess
+sys.path.append('pyscript/')
+import plot_npix 
+
 
 sample_dir = "sample"
 
@@ -23,5 +26,5 @@ for f in list_samples:
         dict_output [run+"_mean"] = float(os.popen(cmd).read().replace('(double)','').split("\n")[2])
         cmd = "root -l -q 'root/npix.C("+'"'+str(f)+'"'+","+'"err"'+")'"
         dict_output [run+"_meanerr"] = float(os.popen(cmd).read().replace('(double)','').split("\n")[2])
+        plot_npix.npix_vs_run(dict_output)
 
-print dict_output
