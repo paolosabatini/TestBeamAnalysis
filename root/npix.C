@@ -12,7 +12,7 @@ double npix(TString filename, TString mode){
   */
 
   Int_t NHits = 0;
-  Int_t inCluster[10];
+  Int_t inCluster[10000];
   
   
   TTree* hits = (TTree*)dir_dut->Get("Hits");
@@ -21,7 +21,7 @@ double npix(TString filename, TString mode){
   hits->SetBranchAddress("NHits",&NHits);
   hits->SetBranchAddress("HitInCluster",inCluster);
   
-  ULong64_t ENTRIES = 50;//tree->GetEntries();
+  ULong64_t ENTRIES = hits->GetEntries();
 
   TH1F* h_npix = new TH1F("h_npix","; Number of pixels in cluster; AU",10,-0.5,9.5);
   

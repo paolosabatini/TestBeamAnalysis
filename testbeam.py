@@ -23,8 +23,12 @@ for f in list_samples:
     run = f.split("/")[1][0:9]
     if args.npix:
         cmd = "root -l -q 'root/npix.C("+'"'+str(f)+'"'+","+'"mean"'+")'"
-        dict_output [run+"_mean"] = float(os.popen(cmd).read().replace('(double)','').split("\n")[2])
+        dict_output [run+"_npix_mu"] = float(os.popen(cmd).read().replace('(double)','').split("\n")[2])
         cmd = "root -l -q 'root/npix.C("+'"'+str(f)+'"'+","+'"err"'+")'"
-        dict_output [run+"_meanerr"] = float(os.popen(cmd).read().replace('(double)','').split("\n")[2])
-        plot_npix.npix_vs_run(dict_output)
+        dict_output [run+"_npix_sigma"] = float(os.popen(cmd).read().replace('(double)','').split("\n")[2])
+
+
+
+if args.npix:
+    plot_npix.npix_vs_run(dict_output)
 
