@@ -4,34 +4,22 @@
 double tot(TString filename, TString mode){
 
   TFile* f = new TFile(filename,"R");
-  TDirectory* dir_dut = (TDirectory*)f->Get("Plane3");
+  TDirectory* dir_dut = (TDirectory*)f->Get("dut1_ibl");
+  TTree* matched = (TTree*)dir_dut->Get("tracks_clusters_matched");
 
-  const int NMAX = 10000; 
+  Float_t clus_tot = 0;
   
-  Int_t NClusters = 0;
-  Int_t inTrack[NMAX];
-  Double_t Value[NMAX];
+  matched->SetBranchAddress("clu_value",&clus_tot);
   
   
-  TTree* clus = (TTree*)dir_dut->Get("Clusters");
-  //  hits->Print();
-
-  clus->SetBranchAddress("NClusters",&NClusters);
-  clus->SetBranchAddress("Track",inTrack);
-  clus->SetBranchAddress("Value",Value);
+  ULong64_t ENTRIES = matched->GetEntries();
   
-  ULong64_t ENTRIES = clus->GetEntries();
-
-  TH1F* h_tot = new TH1F("h_tot","; Cluster ToT; AU",10,-0.5,9.5);
+  TH1F* h_tot = new TH1F("h_tot","; Cluster ToT [BC]; AU",100,-0.5,99.5);
   
   for (int i = 0; i<ENTRIES; i++)
     {
-      clus->GetEntry(i);
-      for (int icl =0; icl <NClusters; icl++)
-	{
-
-	  if (inTrack[icl]!=0) h_tot->Fill(Value[icl]);
-	}
+      matched->GetEntry(i);
+      h_tot->Fill(clus_tot);
     }
 
   double output;

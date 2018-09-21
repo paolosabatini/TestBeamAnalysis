@@ -4,37 +4,22 @@
 double npix(TString filename, TString mode){
 
   TFile* f = new TFile(filename,"R");
-  //  f->ls();
-  TDirectory* dir_dut = (TDirectory*)f->Get("Plane3");
-  /*
-  std::cout<<"plane 3 entries cluster "<<((TTree*)dir_dut->Get("Clusters"))->GetEntries()<<std::endl;
-  std::cout<<"event entries "<<((TTree*)f->Get("Event"))->GetEntries()<<std::endl;
-  */
+  TDirectory* dir_dut = (TDirectory*)f->Get("dut1_ibl");
+  TTree* matched = (TTree*)dir_dut->Get("tracks_clusters_matched");
 
-  Int_t NHits = 0;
-  Int_t inCluster[10000];
+  Short_t NHitsInCluster = 0;
+  
+  matched->SetBranchAddress("clu_size",&NHitsInCluster);
   
   
-  TTree* hits = (TTree*)dir_dut->Get("Hits");
-  //  hits->Print();
-
-  hits->SetBranchAddress("NHits",&NHits);
-  hits->SetBranchAddress("HitInCluster",inCluster);
+  ULong64_t ENTRIES = matched->GetEntries();
   
-  ULong64_t ENTRIES = hits->GetEntries();
-
-  TH1F* h_npix = new TH1F("h_npix","; Number of pixels in cluster; AU",10,-0.5,9.5);
+  TH1F* h_npix = new TH1F("h_npix","; Number of pixels in cluster; AU",20,-0.5,19.5);
   
   for (int i = 0; i<ENTRIES; i++)
     {
-      hits->GetEntry(i);
-      Int_t pixInCluster = 0;
-      for (int ipix =0; ipix <NHits; ipix++)
-	{
-
-	  if (inCluster[ipix]!=0) pixInCluster++;
-	}
-      if (pixInCluster!=0) h_npix->Fill(pixInCluster);
+      matched->GetEntry(i);
+      h_npix->Fill(NHitsInCluster);
     }
 
   double output;
