@@ -23,7 +23,7 @@ def tot_vs_run(dict_output):
     plt.show()
 
 
-def tot_vs_hv(dict_output):
+def tot_vs_hv(dict_output,tune):
     d_mu = {}
     d_sigma = {}
     for name, value in dict_output.iteritems():
@@ -33,14 +33,23 @@ def tot_vs_hv(dict_output):
         if "tot" in name and "sigma" in name:
             d_sigma[int(run)] = value
 
-    dict_hv = {
-        '50_min': 5580, '50_max': 5620,
-        '80_min': 5630, '80_max': 5670,
-        '100_min': 5680, '100_max': 5720,
-        '150_min': 5780, '150_max': 5820,
-        '200_min': 5830, '200_max': 5870,
-        '300_min': 5880, '300_max': 5920
-    }
+    dict_hv = {}
+    if tune == "8at16t2k":
+        dict_hv = {
+            '50_min': 5376, '50_max': 5425,
+            '80_min': 5426, '80_max': 5475,
+            '100_min': 5476, '100_max': 5525,
+            '150_min': 5526, '150_max': 5575,
+            '200_min': 5576, '200_max': 5625,
+            '250_min': 5626, '250_max': 5675,
+            '300_min': 5676, '300_max': 5725,
+            '350_min': 5726, '350_max': 5775,
+            '400_min': 5776, '400_max': 5825,
+            '500_min': 5826, '500_max': 5875,
+            '600_min': 5876, '600_max': 5925,
+        }
+    else:
+        print ">>>  [plot_npix] Tuning point %s not found as schedule"
 
     d_mu_avg = {}
     d_mu_sigavg = {}
@@ -82,7 +91,7 @@ def tot_vs_hv(dict_output):
     plt.xlabel("HV [V]")
     plt.ylabel("Average ToT of cluster on track")
     plt.errorbar(x,y,err_y,marker='.', mfc='black',ms=10,color="black",ls="")
-    plt.xlim((0,350))
-    plt.ylim((0,8))
+    plt.xlim((0,650))
+    plt.ylim((3,7))
     plt.show()
 

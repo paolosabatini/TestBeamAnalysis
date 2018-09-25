@@ -33,18 +33,21 @@ parser = argparse.ArgumentParser(description='Launch analysis on testbeam.')
 parser.add_argument('--npix', dest='npix', action = "store_true", default=False, help='Execute the npix analysis: npix')
 parser.add_argument('--tot', dest='tot', action = "store_true", default=False, help='Execute the npix analysis: tot')
 parser.add_argument('--eff',dest='eff', action = "store_true", default=False, help='Execute the npix analysis: eff')
+parser.add_argument('--debug',dest='debug', action = "store_true", default=False, help='Run for debugging, few samples')
 parser.add_argument('--tune',dest='tune', choices = ['all','8at16t2k','8at16t2p5k'] ,default="all", help='WPs to analyse')
 args = parser.parse_args()
 
 
 sample_type = ""
-if args.npix or args.tot:
+if args.npix or args.tot or args.eff:
     sample_type = 'match-trees'
 else:
     sample_type = 'tracks-data'
 
 
-wildcard = sample_dir+"/*00580*"+sample_type+".root"
+wildcard = sample_dir+"/*"+sample_type+".root"
+if args.debug:
+    wildcard = sample_dir+"/*00570*"+sample_type+".root"
 list_samples = glob.glob(wildcard)
 skim_samples = skim_list_samples(args.tune, list_samples);
 
@@ -67,18 +70,18 @@ for f in skim_samples:
         dict_output [run+"_tot_sigma"] = float(os.popen(cmd).read().replace('(double)','').split("\n")[2])
     if args.eff:
         cmd = "root -l -q 'root/eff.C("+'"'+str(f)+'"'+","+'"mean"'+")'"
-        os.system(cmd)
-        # dict_output [run+"_eff_mu"] = float(os.popen(cmd).read().replace('(double)','').split("\n")[2])
-        # cmd = "root -l -q 'root/tot.C("+'"'+str(f)+'"'+","+'"err"'+")'"
-        # dict_output [run+"_eff_sigma"] = float(os.popen(cmd).read().replace('(double)','').split("\n")[2])
+        dict_output [run+"_eff_mu"] = float(os.popen(cmd).read().replace('(double)','').split("\n")[2])
+        cmd = "root -l -q 'root/tot.C("+'"'+str(f)+'"'+","+'"err"'+")'"
+        dict_output [run+"_eff_sigma"] = float(os.popen(cmd).read().replace('(double)','').split("\n")[2])
     counter_file = counter_file + 1
 
 
 if args.npix:
-    plot_npix.npix_vs_hv(dict_output)
+    plot_npix.npix_vs_hv(dict_output,args.tune)
 
 if args.tot:
-    plot_tot.tot_vs_hv(dict_output)
+    plot_tot.tot_vs_hv(dict_output,args.tune)
 
-# if args.eff:
-#     plot_eff.eff_vs_run(dict_output)
+if args.eff:
+    plot_eff.eff_vs_run(dict_output)
+    plot_eff.eff_vs_hv(dict_output,args.tune)
