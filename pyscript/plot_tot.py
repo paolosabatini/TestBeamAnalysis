@@ -48,6 +48,21 @@ def tot_vs_hv(dict_output,tune):
             '500_min': 5826, '500_max': 5875,
             '600_min': 5876, '600_max': 5925,
         }
+    elif tune == "8at16t2p5k":
+        dict_hv = {
+            '50_min': 5932, '50_max': 5933,
+            '80_min': 5934, '80_max': 5938,
+            '100_min': 5939, '100_max': 5943,
+            '150_min': 5944, '150_max': 5948,
+            '200_min': 5949, '200_max': 5953,
+            '250_min': 5954, '250_max': 5958,
+            '300_min': 5959, '300_max': 5963,
+            '350_min': 5964, '350_max': 5968,
+            '400_min': 5969, '400_max': 5973,
+            '500_min': 5974, '500_max': 5978,
+            '600_min': 5979, '600_max': 5983,
+        }
+
     else:
         print ">>>  [plot_npix] Tuning point %s not found as schedule"
 
